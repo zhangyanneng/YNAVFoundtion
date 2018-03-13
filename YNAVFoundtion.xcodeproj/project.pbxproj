@@ -47,6 +47,8 @@
 		2EE53295204EA25B00E5B240 /* sound.caf in Resources */ = {isa = PBXBuildFile; fileRef = 2EE53293204EA25A00E5B240 /* sound.caf */; };
 		2EE53296204EA25B00E5B240 /* sound2.caf in Resources */ = {isa = PBXBuildFile; fileRef = 2EE53294204EA25B00E5B240 /* sound2.caf */; };
 		2EE53298204EA45900E5B240 /* RecordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE53297204EA45900E5B240 /* RecordViewController.swift */; };
+		2EE88EA42057BBCA00F4B846 /* PreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE88EA32057BBCA00F4B846 /* PreviewView.swift */; };
+		2EE88EA62057BCAA00F4B846 /* YNConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE88EA52057BCAA00F4B846 /* YNConstant.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -92,6 +94,8 @@
 		2EE53293204EA25A00E5B240 /* sound.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = sound.caf; sourceTree = "<group>"; };
 		2EE53294204EA25B00E5B240 /* sound2.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = sound2.caf; sourceTree = "<group>"; };
 		2EE53297204EA45900E5B240 /* RecordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordViewController.swift; sourceTree = "<group>"; };
+		2EE88EA32057BBCA00F4B846 /* PreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewView.swift; sourceTree = "<group>"; };
+		2EE88EA52057BCAA00F4B846 /* YNConstant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YNConstant.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -177,6 +181,7 @@
 			children = (
 				2EAE781C2056694600E294A8 /* CameraButton.swift */,
 				2EAE781F20567A6900E294A8 /* OverlayView.swift */,
+				2EE88EA32057BBCA00F4B846 /* PreviewView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -202,6 +207,7 @@
 		2ECF7AEE204F66DD00708C96 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				2EE88EA52057BCAA00F4B846 /* YNConstant.swift */,
 				2EC319A62056583900D300BD /* UIView+Extend.swift */,
 				2E26BAAD205260BC0071F350 /* UIView+AddLine.swift */,
 				2ECF7AF0204F6AB500708C96 /* String+Path.swift */,
@@ -383,10 +389,12 @@
 				2E9592E12050BE9C00A0D181 /* DefaultMetadataConverter.swift in Sources */,
 				2EAE782020567A6900E294A8 /* OverlayView.swift in Sources */,
 				2EE53292204E9FEF00E5B240 /* AudioViewController.swift in Sources */,
+				2EE88EA42057BBCA00F4B846 /* PreviewView.swift in Sources */,
 				2EBE6F1B205125F800DB277E /* CommentMetadataConverter.swift in Sources */,
 				2EE53298204EA45900E5B240 /* RecordViewController.swift in Sources */,
 				2E9592D62050BAA800A0D181 /* MetaData.swift in Sources */,
 				2E9592DF2050BD4C00A0D181 /* ConverterProtocol.swift in Sources */,
+				2EE88EA62057BCAA00F4B846 /* YNConstant.swift in Sources */,
 				2EC319A12056575B00D300BD /* CaptureViewController.swift in Sources */,
 				2EC3199E205627D900D300BD /* AVKitViewController.swift in Sources */,
 				2E1ACEEC20513F6D00E6763F /* MediaItem.swift in Sources */,

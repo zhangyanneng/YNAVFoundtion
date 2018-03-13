@@ -14,14 +14,16 @@ enum CameraMode {
     case photo
 }
 
+fileprivate var kContent_for_kvo = "adjustingExposure_flag"
+fileprivate let kExposure_KeyPath = "adjustingExposure"
 
 class CameraViewController: UIViewController {
     
     var mediaType: CameraMode = .photo
     
     var overlayView: OverlayView = OverlayView()
-    var previewView: UIView = UIView()
-    var previewLayer: AVCaptureVideoPreviewLayer = AVCaptureVideoPreviewLayer() //
+    var previewView: PreviewView = PreviewView()
+//    var previewLayer: AVCaptureVideoPreviewLayer = AVCaptureVideoPreviewLayer() //
     
     var captureSession: AVCaptureSession?
     var videoInput: AVCaptureDeviceInput?
@@ -36,9 +38,6 @@ class CameraViewController: UIViewController {
     // 检查相机设备数量
     private var cameraCount = AVCaptureDevice.devices(for: .video).count
     
-    let viewW = UIScreen.main.bounds.size.width
-    let viewH = UIScreen.main.bounds.size.height
-    
     override var prefersStatusBarHidden: Bool {
         return true
     }
@@ -50,9 +49,10 @@ class CameraViewController: UIViewController {
         
         self.setupSession()
         
-        self.previewLayer.session = self.captureSession
-        
-        self.startSession()
+        if self.captureSession != nil {
+            self.previewView.setupSession(self.captureSession!)
+            self.startSession()
+        }
     }
     
     //MARK: 设置会话
@@ -113,7 +113,7 @@ class CameraViewController: UIViewController {
         if !self.captureSession!.isRunning {
             
             self.videoQuene!.async {
-                self.captureSession?.startRunning()
+                self.captureSession!.startRunning()
             }
         }
     }
@@ -123,7 +123,7 @@ class CameraViewController: UIViewController {
         if self.captureSession!.isRunning {
             
             self.videoQuene!.async {
-                self.captureSession?.stopRunning()
+                self.captureSession!.stopRunning()
             }
         }
     }
@@ -179,7 +179,7 @@ class CameraViewController: UIViewController {
         self.captureSession!.commitConfiguration()
     }
 
-    //对焦和曝光
+    //MARK: 对焦
     private func focusAtPoint(_ point: CGPoint) {
         
         let device = self.videoInput!.device
@@ -203,17 +203,106 @@ class CameraViewController: UIViewController {
             device.unlockForConfiguration()
             
         }
+    }
+    
+    //MARK: 曝光
+    private func exposeAtPoint(_ point: CGPoint) {
+        
+        let device = self.videoInput!.device
+        //检查设备是否支持曝光
+        if device.isExposurePointOfInterestSupported && device.isExposureModeSupported(AVCaptureDevice.ExposureMode.autoExpose) {
+            
+            do {
+                try device.lockForConfiguration()
+            } catch {
+                
+                print(error)
+                return
+            }
+            
+            device.exposurePointOfInterest = point
+            device.exposureMode = .autoExpose
+//            device.exposureDuration = 0.5 //曝光时间
+            
+            //KVO监听是否支持锁定曝光模式
+            if device.isExposureModeSupported(AVCaptureDevice.ExposureMode.locked) {
+                
+                device.addObserver(self, forKeyPath: kExposure_KeyPath, options: NSKeyValueObservingOptions.new, context: &kContent_for_kvo)
+            }
+            
+            //解除设备锁定
+            device.unlockForConfiguration()
+        }
+    }
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        
+        if context == &kContent_for_kvo {
+        
+            let device:AVCaptureDevice = object as! AVCaptureDevice
+            
+            device.removeObserver(self, forKeyPath: kExposure_KeyPath)
+            
+            if !device.isAdjustingExposure && device.isExposureModeSupported(AVCaptureDevice.ExposureMode.locked) {
+                
+                DispatchQueue.main.async {
+                
+                    do {
+                        try device.lockForConfiguration()
+                    } catch {
+                        
+                        print(error)
+                        return
+                    }
+                    
+                    device.exposureMode = .locked
+                    device.unlockForConfiguration()
+                    
+                }
+            }
+        } else {
+            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+        }
+    }
+    
+    //MARK:重置对焦和曝光
+    private func resetFocusAndExposure(_ point: CGPoint) {
+        
+        let device = self.videoInput!.device
+        
+        do {
+            try device.lockForConfiguration()
+        } catch {
+            
+            print(error)
+            return
+        }
+        
+        //查询设备是否支持对焦 ，自动对焦模式
+        if device.isFocusPointOfInterestSupported && device.isFocusModeSupported(AVCaptureDevice.FocusMode.autoFocus) {
+            
+            device.focusPointOfInterest = point
+            device.focusMode = .autoFocus
+            
+        }
+        
+        //检查设备是否支持曝光
+        if device.isExposurePointOfInterestSupported && device.isExposureModeSupported(AVCaptureDevice.ExposureMode.autoExpose) {
+            
+            device.exposurePointOfInterest = point
+            device.exposureMode = .autoExpose
+        }
+        
+        device.unlockForConfiguration()
         
     }
+    
     
     
     //UI 布局
     private func initSubviews() {
         
-        self.previewView.frame = CGRect(x: 0, y: 0, width: viewW, height: viewH)
-        self.previewLayer.frame = CGRect(x: 0, y: 0, width: viewW, height: viewH)
-        self.previewView.layer.addSublayer(self.previewLayer)
-        self.previewView.backgroundColor = UIColor.white
+        self.previewView.frame = CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight)
         
         self.overlayView.frame = self.view.bounds
         self.overlayView.backgroundColor = UIColor.clear
@@ -223,19 +312,29 @@ class CameraViewController: UIViewController {
         self.view.addSubview(self.previewView)
         self.view.addSubview(self.overlayView)
         
-        self.previewLayer.videoGravity = .resizeAspectFill
         
         //添加手势
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleSingleTap(_:)))
-        self.previewView.addGestureRecognizer(tapGestureRecognizer)
+        let singleTap = UITapGestureRecognizer(target: self, action: #selector(handleSingleTap(_:)))
+        self.previewView.addGestureRecognizer(singleTap)
         
+        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(handleDoubleTap(_:)))
+        doubleTap.numberOfTapsRequired = 2
+        self.previewView.addGestureRecognizer(doubleTap)
+        
+        singleTap.require(toFail: doubleTap)
+        
+        //双指双击
+        let doubleDoubleTap = UITapGestureRecognizer(target: self, action: #selector(handleDoubleDoubleTap(_:)))
+        doubleDoubleTap.numberOfTapsRequired = 2
+        doubleDoubleTap.numberOfTouchesRequired = 2
+        self.previewView.addGestureRecognizer(doubleDoubleTap)
     }
     
     //布局遮盖层
     private func initOverlaySubviews() {
         
         //顶部
-        let topView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: viewW, height: 44))
+        let topView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: screenWidth, height: 44))
         topView.backgroundColor = UIColor(white: 0.0, alpha: 0.7)
         self.overlayView.addSubview(topView)
         self.overlayView.topView = topView
@@ -258,13 +357,13 @@ class CameraViewController: UIViewController {
         
         //切换摄像头
         let cameraChangeBtn = UIButton()
-        cameraChangeBtn.frame = CGRect(x: viewW - 44 - 20, y: 0, width: 44, height: 44)
+        cameraChangeBtn.frame = CGRect(x: screenWidth - 44 - 20, y: 0, width: 44, height: 44)
         cameraChangeBtn.setImage(UIImage(named:"camera_change"), for: .normal)
         topView.addSubview(cameraChangeBtn)
         cameraChangeBtn.addTarget(self, action: #selector(cameraChangeBtnClick), for: .touchUpInside)
         
         //底部
-        let bottomView = UIView(frame: CGRect(x: 0.0, y: viewH - 100, width: viewW, height: 100))
+        let bottomView = UIView(frame: CGRect(x: 0.0, y: screenHeight - 100, width: screenWidth, height: 100))
         bottomView.backgroundColor = UIColor(white: 0.0, alpha: 0.7)
         self.overlayView.addSubview(bottomView)
         self.overlayView.bottomView = bottomView
@@ -301,7 +400,37 @@ class CameraViewController: UIViewController {
     @objc
     private func handleSingleTap(_ recognizer: UITapGestureRecognizer) {
         
-        print("点击了手势")
+        let point = recognizer.location(in: self.previewView)
+        
+        self.focusAtPoint(self.previewView.captureDevicePointConverted(point))
+        
+        self.previewView.focusViewAnimation(point)
+        
+    }
+    
+    @objc
+    private func handleDoubleTap(_ recognizer: UITapGestureRecognizer) {
+        
+        let point = recognizer.location(in: self.previewView)
+        
+        self.exposeAtPoint(self.previewView.captureDevicePointConverted(point))
+        
+        self.previewView.exposeViewAnimation(point)
+        
+    }
+    
+    @objc
+    private func handleDoubleDoubleTap(_ recognizer: UITapGestureRecognizer) {
+        
+        let point = CGPoint(x: 0.5, y: 0.5)
+        
+        self.resetFocusAndExposure(point)
+        
+        if  self.videoInput!.device.isAutoFocusRangeRestrictionSupported &&
+            self.videoInput!.device.isExposurePointOfInterestSupported {
+            self.previewView.resetFocusAndExposeViewAnimation()
+        }
+        
     }
     
     //MARK: 点击事件
