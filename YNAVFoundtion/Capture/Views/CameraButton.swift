@@ -25,8 +25,7 @@ class CameraButton: UIButton {
     }
     
     private func addLayer(_ color: UIColor) {
-        
-        
+                
         self.layer.cornerRadius = self.bounds.size.width * 0.5
         self.layer.borderColor = UIColor.white.cgColor
         self.layer.borderWidth = 5.0

@@ -76,7 +76,6 @@ class PreviewView: UIView {
         self.exposeView.center = centerPoint
         self.exposeView.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
         
-        
         UIView.animate(withDuration: 0.25, delay: 0.0, options: .curveEaseInOut, animations: {
             
             self.focusView.layer.transform = CATransform3DMakeScale(0.5, 0.5, 1.0)

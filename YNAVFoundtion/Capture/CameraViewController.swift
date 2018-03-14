@@ -8,6 +8,8 @@
 
 import UIKit
 import AVFoundation
+import AssetsLibrary
+import Photos
 
 enum CameraMode {
     case video
@@ -17,7 +19,7 @@ enum CameraMode {
 fileprivate var kContent_for_kvo = "adjustingExposure_flag"
 fileprivate let kExposure_KeyPath = "adjustingExposure"
 
-class CameraViewController: UIViewController {
+class CameraViewController: UIViewController,AVCaptureFileOutputRecordingDelegate {
     
     var mediaType: CameraMode = .photo
     
@@ -30,13 +32,19 @@ class CameraViewController: UIViewController {
     var audioInput: AVCaptureDeviceInput?
     var imageOutput: AVCaptureStillImageOutput?
     var movieOutput: AVCaptureMovieFileOutput?
-    var outputURL: NSURL?
+    var outputURL: URL?
+    private var outImage: UIImage? //保存拍照的照片
+    var thumbImgBtn:UIButton?
+    var timer: Timer?
     
     // 创建会话队列
     private var videoQuene: DispatchQueue?
     
     // 检查相机设备数量
     private var cameraCount = AVCaptureDevice.devices(for: .video).count
+    
+    var titleLabel: UILabel?
+    
     
     override var prefersStatusBarHidden: Bool {
         return true
@@ -67,7 +75,7 @@ class CameraViewController: UIViewController {
         do {
             try self.videoInput = AVCaptureDeviceInput(device: videoDevice)
         } catch {
-            print(error)
+            YNLog("error: \(error)")
             return  //报错直接返回，不继续
         }
         
@@ -81,7 +89,7 @@ class CameraViewController: UIViewController {
         do {
             try self.audioInput = AVCaptureDeviceInput(device: audioDevice)
         } catch {
-            print(error)
+            YNLog("error: \(error)")
             return  //报错直接返回，不继续
         }
         
@@ -160,7 +168,7 @@ class CameraViewController: UIViewController {
         do {
             newVideoInput = try AVCaptureDeviceInput(device: inactiveDevice)
         } catch {
-            print(error)
+            YNLog("error: \(error)")
             return
         }
         
@@ -192,7 +200,7 @@ class CameraViewController: UIViewController {
                 try device.lockForConfiguration()
             } catch {
                 
-                print(error)
+                YNLog("error: \(error)")
                 return
             }
     
@@ -216,7 +224,7 @@ class CameraViewController: UIViewController {
                 try device.lockForConfiguration()
             } catch {
                 
-                print(error)
+                YNLog("error: \(error)")
                 return
             }
             
@@ -251,7 +259,7 @@ class CameraViewController: UIViewController {
                         try device.lockForConfiguration()
                     } catch {
                         
-                        print(error)
+                        YNLog("error: \(error)")
                         return
                     }
                     
@@ -274,7 +282,7 @@ class CameraViewController: UIViewController {
             try device.lockForConfiguration()
         } catch {
             
-            print(error)
+            YNLog("error: \(error)")
             return
         }
         
@@ -297,9 +305,256 @@ class CameraViewController: UIViewController {
         
     }
     
+    //MARK:闪光灯
+    private func setCameraFlash(_ model: AVCaptureDevice.FlashMode) {
+        
+        let device = self.videoInput!.device
+        
+        if device.isFlashModeSupported(model) {
+            
+            do {
+                try device.lockForConfiguration()
+            } catch {
+                
+                YNLog("error: \(error)")
+                return
+            }
+            
+            device.flashMode = model
+            device.unlockForConfiguration()
+        }
+    }
+    
+    //MARK: 手电筒
+    private func setCameraTorch(_ model: AVCaptureDevice.TorchMode) {
+        let device = self.videoInput!.device
+        
+        if device.isTorchModeSupported(model) {
+            
+            do {
+                try device.lockForConfiguration()
+            } catch {
+                
+                YNLog("error: \(error)")
+                return
+            }
+            
+            device.torchMode = model
+            device.unlockForConfiguration()
+        }
+    }
+    
+    //MARK: 拍摄照片
+    private func cameraStillImage () {
+        
+        let connection:AVCaptureConnection = self.imageOutput!.connection(with: .video)!
+        //调整图片的方向
+        if connection.isVideoOrientationSupported {
+            connection.videoOrientation = self.currentVideoOrientation()
+        }
+        
+        self.imageOutput!.captureStillImageAsynchronously(from: connection) { (sampleBuffer, error) in
+            
+            if sampleBuffer != nil {
+                //读取图片数据
+                let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(sampleBuffer!)
+                let image = UIImage(data: imageData!)
+                self.thumbImgBtn!.setImage(image, for: .normal)
+                
+                //保存图片
+                UIImageWriteToSavedPhotosAlbum(image!, self, #selector(self.saveImage(image:didFinishSavingWithError:contextInfo:)), nil)
+                
+            } else {
+                YNLog("error: \(String(describing: error))")
+            }
+        }
+        
+    }
+    
+    private func currentVideoOrientation () -> AVCaptureVideoOrientation {
+        
+        var orientation: AVCaptureVideoOrientation
+        
+        switch UIDevice.current.orientation {
+        case .portrait:
+            orientation = AVCaptureVideoOrientation.portrait
+            break
+        case .landscapeRight:
+             orientation = AVCaptureVideoOrientation.landscapeLeft
+            break
+        case .portraitUpsideDown:
+             orientation = AVCaptureVideoOrientation.portraitUpsideDown
+            break
+        default:
+            orientation = AVCaptureVideoOrientation.landscapeRight
+            break
+        }
+        
+        return orientation
+    }
+    
+    @objc
+    private func saveImage(image: UIImage, didFinishSavingWithError error: NSError?, contextInfo: AnyObject) {
+        
+        if error != nil {
+            YNLog("save image failed. error: \(String(describing: error))")
+        }
+    }
+    
+    //MARK: 拍摄视频
+    private func startRecordingVideo() {
+        
+        if self.movieOutput!.isRecording {
+            return
+        }
+        
+        let connection:AVCaptureConnection = self.movieOutput!.connection(with: .video)!
+        
+        if connection.isVideoOrientationSupported {
+            connection.videoOrientation = self.currentVideoOrientation()
+        }
+        
+        if connection.isVideoStabilizationSupported {
+            //设置视频稳定模式
+            connection.preferredVideoStabilizationMode = .auto
+        }
+        
+        let device:AVCaptureDevice = self.videoInput!.device
+        
+        //摄像头平滑对焦模式
+        if device.isSmoothAutoFocusEnabled {
+            
+            do {
+                try device.lockForConfiguration()
+            } catch {
+                
+                YNLog("error: \(error)")
+                return
+            }
+            
+            device.isSmoothAutoFocusEnabled = true
+            
+            device.unlockForConfiguration()
+        }
+        
+        self.outputURL = self.uniqueURL()
+        //开启录制
+        self.movieOutput!.startRecording(to: self.outputURL!, recordingDelegate: self)
+    }
+    
+    //录像开始录制的代理方法
+    func fileOutput(_ output: AVCaptureFileOutput, didStartRecordingTo fileURL: URL, from connections: [AVCaptureConnection]) {
+    
+        //设置定时器，显示录播时间
+        self.startTimer()
+    }
+    
+    //录像结束的代理方法
+    func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
+        
+        //结束定时器
+        self.stopTimer()
+        
+        if error != nil {
+            YNLog("error: \(String(describing: error))")
+        } else {
+            //保存到相册
+            PHPhotoLibrary.shared().performChanges({
+                PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: outputFileURL)
+            }, completionHandler: { (success, error) in
+                
+                if success {
+                    //获取缩率图
+                    let asset = AVAsset(url: outputFileURL)
+                    let imageGenerator: AVAssetImageGenerator = AVAssetImageGenerator(asset: asset)
+                    imageGenerator.maximumSize = CGSize(width: 100.0, height: 0.0)
+                    imageGenerator.appliesPreferredTrackTransform = true
+                    
+                    do {
+                        let imageRef = try imageGenerator.copyCGImage(at: kCMTimeZero, actualTime: nil)
+                        let image = UIImage(cgImage: imageRef)
+                        DispatchQueue.main.async{
+                            self.thumbImgBtn!.setImage(image, for: .normal)
+                        }
+                    } catch {
+                        YNLog(error)
+                    }
+                    
+                    YNLog("保存视频成功")
+                } else {
+                    YNLog("保存视频失败")
+                }
+                
+            })
+            
+        }
+        
+        //移除视频的临时地址
+         self.outputURL = nil
+        
+    }
     
     
-    //UI 布局
+    private func stopRecrdingVideo() {
+        if self.movieOutput!.isRecording {
+            self.movieOutput!.stopRecording()
+        }
+    }
+    
+    private func startTimer() {
+        if self.timer != nil {
+            self.timer!.invalidate()
+            self.timer = nil
+        }
+        //添加一个定时器
+        self.timer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(updateRecordTime), userInfo: nil, repeats: true)
+        
+    }
+    //更新时间
+    @objc
+    private func updateRecordTime() {
+        
+        guard let time:CMTime = self.movieOutput?.recordedDuration else {return}
+        
+        //解决相差8小时
+        let date = Date(timeIntervalSince1970: TimeInterval(CMTimeGetSeconds(time)))
+        let formatter = DateFormatter()
+        formatter.timeZone = NSTimeZone.system
+        formatter.dateFormat = "hh:mm:ss"
+        self.titleLabel!.text  = formatter.string(from:date)
+        
+    }
+    
+    private func stopTimer() {
+        if self.timer != nil {
+            self.timer!.invalidate()
+            self.timer = nil
+        }
+    }
+    
+    private func uniqueURL()->URL? {
+        
+        let fileManager: FileManager = FileManager.default
+        
+        let timestamp = Date().timeIntervalSince1970
+        
+        
+        let dirPath = "\(Int64(timestamp) * 1000 + Int64(arc4random_uniform(100)))".tmpDir()
+        
+        do {
+            try fileManager.createDirectory(atPath: dirPath, withIntermediateDirectories: true, attributes: nil)
+        } catch {
+            YNLog("error:\(error)")
+            return nil
+        }
+        
+        let filePath: String = dirPath + "/"+"_video.mov"
+        
+        return URL(fileURLWithPath: filePath)
+    }
+    
+    
+    //MARK: UI 布局
     private func initSubviews() {
         
         self.previewView.frame = CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight)
@@ -344,16 +599,17 @@ class CameraViewController: UIViewController {
         flashBtn.setImage(UIImage(named:"flash_open"), for: .normal)
         flashBtn.setImage(UIImage(named:"flash_close"), for: .selected)
         topView.addSubview(flashBtn)
-        flashBtn.addTarget(self, action: #selector(flashBtnClick), for: .touchUpInside)
+        flashBtn.addTarget(self, action: #selector(flashBtnClick(_:)), for: .touchUpInside)
         //标题 --用于显示视频时间
         let titleLabel = UILabel()
-        titleLabel.text = "00:00:00"
+        titleLabel.text = "  00:00:00  "
         titleLabel.textColor = .white
         titleLabel.textAlignment = .center
         titleLabel.sizeToFit()
         titleLabel.center = CGPoint(x: topView.bounds.midX, y: topView.bounds.midY)
         topView.addSubview(titleLabel)
         titleLabel.isHidden = self.mediaType == .video ? false : true
+        self.titleLabel = titleLabel
         
         //切换摄像头
         let cameraChangeBtn = UIButton()
@@ -384,6 +640,7 @@ class CameraViewController: UIViewController {
         thumbnailBtn.backgroundColor = UIColor.black
         bottomView.addSubview(thumbnailBtn)
         thumbnailBtn.addTarget(self, action: #selector(thumbnailBtnClick), for: .touchUpInside)
+        self.thumbImgBtn = thumbnailBtn;
         
         //取消按钮
         let cancelBtn = UIButton()
@@ -435,7 +692,15 @@ class CameraViewController: UIViewController {
     
     //MARK: 点击事件
     @objc
-    private func flashBtnClick() {
+    private func flashBtnClick(_ sender: UIButton) {
+        
+        sender.isSelected = !sender.isSelected
+        
+        if sender.isSelected { //关闭闪光灯
+            self.setCameraFlash(.on)
+        } else {
+            self.setCameraFlash(.off)
+        }
         
     }
     
@@ -448,6 +713,15 @@ class CameraViewController: UIViewController {
     @objc
     private func takeBtnClick() {
         
+        if self.mediaType == .photo {
+            self.cameraStillImage()
+        } else {
+            if self.movieOutput!.isRecording {
+                self.stopRecrdingVideo()
+            } else {
+                self.startRecordingVideo()
+            }
+        }
     }
     
     @objc
