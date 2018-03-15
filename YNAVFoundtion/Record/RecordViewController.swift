@@ -177,10 +177,13 @@ class RecordViewController: UIViewController,AVAudioRecorderDelegate {
     @objc
     private func updateRecordTime() {
         
-        guard let time = self.recorder?.currentTime else {return}
-        let formatter = DateFormatter()
-        formatter.dateFormat = "mm:ss"
-        self.dateLabel.text = formatter.string(from: Date.init(timeIntervalSince1970: time))
+        guard let interval = self.recorder?.currentTime else {return}
+        
+        let hours: Int = Int(interval / 3600)
+        let minutes: Int = Int(Int(interval / 60) % 60)
+        let seconds: Int = Int(Int(interval) % 60)
+        
+        self.dateLabel.text  = String(format: "%02d:%02d:%02d", hours,minutes,seconds)
         
         //self.recorder?.updateMeters() //读取音频的分贝数据,
         //self.recorder?.peakPower(forChannel: 0) //峰值分贝值

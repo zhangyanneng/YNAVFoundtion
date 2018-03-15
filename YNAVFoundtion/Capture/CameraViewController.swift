@@ -10,6 +10,7 @@ import UIKit
 import AVFoundation
 import AssetsLibrary
 import Photos
+import MobileCoreServices
 
 enum CameraMode {
     case video
@@ -516,12 +517,13 @@ class CameraViewController: UIViewController,AVCaptureFileOutputRecordingDelegat
         
         guard let time:CMTime = self.movieOutput?.recordedDuration else {return}
         
-        //解决相差8小时
-        let date = Date(timeIntervalSince1970: TimeInterval(CMTimeGetSeconds(time)))
-        let formatter = DateFormatter()
-        formatter.timeZone = NSTimeZone.system
-        formatter.dateFormat = "hh:mm:ss"
-        self.titleLabel!.text  = formatter.string(from:date)
+        let interval = CMTimeGetSeconds(time)
+        
+        let hours: Int = Int(interval / 3600)
+        let minutes: Int = Int(Int(interval / 60) % 60)
+        let seconds: Int = Int(Int(interval) % 60)
+        
+        self.titleLabel!.text  = String(format: "%02d:%02d:%02d", hours,minutes,seconds)
         
     }
     
@@ -602,10 +604,10 @@ class CameraViewController: UIViewController,AVCaptureFileOutputRecordingDelegat
         flashBtn.addTarget(self, action: #selector(flashBtnClick(_:)), for: .touchUpInside)
         //标题 --用于显示视频时间
         let titleLabel = UILabel()
-        titleLabel.text = "  00:00:00  "
+        titleLabel.text = "00:00:00"
         titleLabel.textColor = .white
         titleLabel.textAlignment = .center
-        titleLabel.sizeToFit()
+        titleLabel.size = CGSize(width: 100, height: 21)
         titleLabel.center = CGPoint(x: topView.bounds.midX, y: topView.bounds.midY)
         topView.addSubview(titleLabel)
         titleLabel.isHidden = self.mediaType == .video ? false : true
@@ -727,10 +729,24 @@ class CameraViewController: UIViewController,AVCaptureFileOutputRecordingDelegat
     @objc
     private func thumbnailBtnClick() {
         
+        let imageController = UIImagePickerController()
+        imageController.sourceType = .photoLibrary
+        if self.mediaType == .video {
+            imageController.mediaTypes = [kUTTypeMovie as String]
+        } else {
+            imageController.mediaTypes = [kUTTypeImage as String]
+        }
+        self.present(imageController, animated: true, completion: nil)
     }
     
     @objc
     private func cancelBtnClick() {
+        
+        if self.timer != nil {
+            self.timer!.invalidate()
+            self.timer = nil
+        }
+        
         self.dismiss(animated: true, completion: nil)
     }
     
