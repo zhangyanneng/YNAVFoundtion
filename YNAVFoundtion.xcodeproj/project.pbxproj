@@ -13,6 +13,7 @@
 		2E26BAA920522F2A0071F350 /* hubblecast.m4v in Resources */ = {isa = PBXBuildFile; fileRef = 2E26BAA820522F2A0071F350 /* hubblecast.m4v */; };
 		2E26BAAC20522F990071F350 /* VideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E26BAAB20522F990071F350 /* VideoViewController.swift */; };
 		2E26BAAE205260BC0071F350 /* UIView+AddLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E26BAAD205260BC0071F350 /* UIView+AddLine.swift */; };
+		2E5007E6205B53F900E64489 /* FaceCameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5007E5205B53F900E64489 /* FaceCameraViewController.swift */; };
 		2E9592C1204FEF2E00A0D181 /* AAC.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 2E9592C0204FEF2E00A0D181 /* AAC.m4a */; };
 		2E9592C4204FF5D900A0D181 /* MetaDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9592C3204FF5D900A0D181 /* MetaDataViewController.swift */; };
 		2E9592C6204FFB1100A0D181 /* MetaDataDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9592C5204FFB1100A0D181 /* MetaDataDetailViewController.swift */; };
@@ -58,6 +59,7 @@
 		2E26BAA820522F2A0071F350 /* hubblecast.m4v */ = {isa = PBXFileReference; lastKnownFileType = file; path = hubblecast.m4v; sourceTree = "<group>"; };
 		2E26BAAB20522F990071F350 /* VideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewController.swift; sourceTree = "<group>"; };
 		2E26BAAD205260BC0071F350 /* UIView+AddLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+AddLine.swift"; sourceTree = "<group>"; };
+		2E5007E5205B53F900E64489 /* FaceCameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceCameraViewController.swift; sourceTree = "<group>"; };
 		2E9592C0204FEF2E00A0D181 /* AAC.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = AAC.m4a; sourceTree = "<group>"; };
 		2E9592C3204FF5D900A0D181 /* MetaDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaDataViewController.swift; sourceTree = "<group>"; };
 		2E9592C5204FFB1100A0D181 /* MetaDataDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaDataDetailViewController.swift; sourceTree = "<group>"; };
@@ -116,6 +118,14 @@
 				2EC3199D205627D800D300BD /* AVKitViewController.swift */,
 			);
 			path = Video;
+			sourceTree = "<group>";
+		};
+		2E5007E4205B53E400E64489 /* Face */ = {
+			isa = PBXGroup;
+			children = (
+				2E5007E5205B53F900E64489 /* FaceCameraViewController.swift */,
+			);
+			path = Face;
 			sourceTree = "<group>";
 		};
 		2E9592C7204FFE3F00A0D181 /* Media */ = {
@@ -245,6 +255,7 @@
 		2EE53276204E977D00E5B240 /* YNAVFoundtion */ = {
 			isa = PBXGroup;
 			children = (
+				2E5007E4205B53E400E64489 /* Face */,
 				2EC3199F2056574300D300BD /* Capture */,
 				2ECF7AF4204FD7A100708C96 /* MetaData */,
 				2ECF7AEE204F66DD00708C96 /* Common */,
@@ -381,6 +392,7 @@
 				2E9592C6204FFB1100A0D181 /* MetaDataDetailViewController.swift in Sources */,
 				2E1ACEEA20513C7C00E6763F /* MetadataConverterFactory.swift in Sources */,
 				2EE5328A204E97D900E5B240 /* TableViewController.swift in Sources */,
+				2E5007E6205B53F900E64489 /* FaceCameraViewController.swift in Sources */,
 				2EC319A5205657A300D300BD /* CameraViewController.swift in Sources */,
 				2E1ACEE820513B5D00E6763F /* DiscMetadataConverter.swift in Sources */,
 				2E26BAAE205260BC0071F350 /* UIView+AddLine.swift in Sources */,

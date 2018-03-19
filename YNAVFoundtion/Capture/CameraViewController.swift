@@ -62,6 +62,13 @@ class CameraViewController: UIViewController,AVCaptureFileOutputRecordingDelegat
             self.previewView.setupSession(self.captureSession!)
             self.startSession()
         }
+        
+        //videoZoomFactor设备的缩放因子，最大值为videoMaxZoomFactor，最小值为1.0 videoMaxZoomFactor由设备去决定
+        if self.videoInput!.device.activeFormat.videoMaxZoomFactor > CGFloat(1.0) {
+            YNLog("支持视频缩放")
+//            self.videoInput!.device.videoZoomFactor  //可以设置缩放比例
+//            self.videoInput!.device.ramp(toVideoZoomFactor: <#T##CGFloat#>, withRate: 1.0)
+        }
     }
     
     //MARK: 设置会话
@@ -735,6 +742,7 @@ class CameraViewController: UIViewController,AVCaptureFileOutputRecordingDelegat
             imageController.mediaTypes = [kUTTypeMovie as String]
         } else {
             imageController.mediaTypes = [kUTTypeImage as String]
+
         }
         self.present(imageController, animated: true, completion: nil)
     }
