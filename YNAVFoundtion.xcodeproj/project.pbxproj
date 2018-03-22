@@ -14,6 +14,8 @@
 		2E26BAAC20522F990071F350 /* VideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E26BAAB20522F990071F350 /* VideoViewController.swift */; };
 		2E26BAAE205260BC0071F350 /* UIView+AddLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E26BAAD205260BC0071F350 /* UIView+AddLine.swift */; };
 		2E5007E6205B53F900E64489 /* FaceCameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5007E5205B53F900E64489 /* FaceCameraViewController.swift */; };
+		2E6007E02061EF8E0065D8FC /* CodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6007DF2061EF8E0065D8FC /* CodeViewController.swift */; };
+		2E6007E22061F0800065D8FC /* BaseCameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6007E12061F0800065D8FC /* BaseCameraViewController.swift */; };
 		2E9592C1204FEF2E00A0D181 /* AAC.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 2E9592C0204FEF2E00A0D181 /* AAC.m4a */; };
 		2E9592C4204FF5D900A0D181 /* MetaDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9592C3204FF5D900A0D181 /* MetaDataViewController.swift */; };
 		2E9592C6204FFB1100A0D181 /* MetaDataDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9592C5204FFB1100A0D181 /* MetaDataDetailViewController.swift */; };
@@ -36,6 +38,8 @@
 		2EC319A12056575B00D300BD /* CaptureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC319A02056575B00D300BD /* CaptureViewController.swift */; };
 		2EC319A5205657A300D300BD /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC319A4205657A300D300BD /* CameraViewController.swift */; };
 		2EC319A72056583900D300BD /* UIView+Extend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC319A62056583900D300BD /* UIView+Extend.swift */; };
+		2ECB1C31206389E700AF5759 /* FilterCameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ECB1C30206389E700AF5759 /* FilterCameraViewController.swift */; };
+		2ECB1C382063947000AF5759 /* FilterPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ECB1C372063947000AF5759 /* FilterPreviewView.swift */; };
 		2ECF7AF1204F6AB500708C96 /* String+Path.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ECF7AF0204F6AB500708C96 /* String+Path.swift */; };
 		2ECF7AF3204FD77000708C96 /* waterfall.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 2ECF7AF2204FD77000708C96 /* waterfall.mp4 */; };
 		2EE53278204E977D00E5B240 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE53277204E977D00E5B240 /* AppDelegate.swift */; };
@@ -60,6 +64,8 @@
 		2E26BAAB20522F990071F350 /* VideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewController.swift; sourceTree = "<group>"; };
 		2E26BAAD205260BC0071F350 /* UIView+AddLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+AddLine.swift"; sourceTree = "<group>"; };
 		2E5007E5205B53F900E64489 /* FaceCameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceCameraViewController.swift; sourceTree = "<group>"; };
+		2E6007DF2061EF8E0065D8FC /* CodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeViewController.swift; sourceTree = "<group>"; };
+		2E6007E12061F0800065D8FC /* BaseCameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCameraViewController.swift; sourceTree = "<group>"; };
 		2E9592C0204FEF2E00A0D181 /* AAC.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = AAC.m4a; sourceTree = "<group>"; };
 		2E9592C3204FF5D900A0D181 /* MetaDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaDataViewController.swift; sourceTree = "<group>"; };
 		2E9592C5204FFB1100A0D181 /* MetaDataDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaDataDetailViewController.swift; sourceTree = "<group>"; };
@@ -82,6 +88,8 @@
 		2EC319A02056575B00D300BD /* CaptureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureViewController.swift; sourceTree = "<group>"; };
 		2EC319A4205657A300D300BD /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		2EC319A62056583900D300BD /* UIView+Extend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Extend.swift"; sourceTree = "<group>"; };
+		2ECB1C30206389E700AF5759 /* FilterCameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterCameraViewController.swift; sourceTree = "<group>"; };
+		2ECB1C372063947000AF5759 /* FilterPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterPreviewView.swift; sourceTree = "<group>"; };
 		2ECF7AF0204F6AB500708C96 /* String+Path.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Path.swift"; sourceTree = "<group>"; };
 		2ECF7AF2204FD77000708C96 /* waterfall.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = waterfall.mp4; sourceTree = "<group>"; };
 		2EE53274204E977D00E5B240 /* YNAVFoundtion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YNAVFoundtion.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -120,12 +128,15 @@
 			path = Video;
 			sourceTree = "<group>";
 		};
-		2E5007E4205B53E400E64489 /* Face */ = {
+		2E5007E4205B53E400E64489 /* Camera */ = {
 			isa = PBXGroup;
 			children = (
+				2ECB1C332063940F00AF5759 /* Filter */,
 				2E5007E5205B53F900E64489 /* FaceCameraViewController.swift */,
+				2E6007DF2061EF8E0065D8FC /* CodeViewController.swift */,
+				2E6007E12061F0800065D8FC /* BaseCameraViewController.swift */,
 			);
-			path = Face;
+			path = Camera;
 			sourceTree = "<group>";
 		};
 		2E9592C7204FFE3F00A0D181 /* Media */ = {
@@ -208,10 +219,51 @@
 			children = (
 				2EAE781E2056754200E294A8 /* Models */,
 				2EAE78192056688800E294A8 /* Views */,
+				2ECB1C3220638CD700AF5759 /* Controller */,
+			);
+			path = Capture;
+			sourceTree = "<group>";
+		};
+		2ECB1C3220638CD700AF5759 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
 				2EC319A02056575B00D300BD /* CaptureViewController.swift */,
 				2EC319A4205657A300D300BD /* CameraViewController.swift */,
 			);
-			path = Capture;
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		2ECB1C332063940F00AF5759 /* Filter */ = {
+			isa = PBXGroup;
+			children = (
+				2ECB1C362063944300AF5759 /* Controllers */,
+				2ECB1C352063943D00AF5759 /* Models */,
+				2ECB1C342063943600AF5759 /* Views */,
+			);
+			path = Filter;
+			sourceTree = "<group>";
+		};
+		2ECB1C342063943600AF5759 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				2ECB1C372063947000AF5759 /* FilterPreviewView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		2ECB1C352063943D00AF5759 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		2ECB1C362063944300AF5759 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				2ECB1C30206389E700AF5759 /* FilterCameraViewController.swift */,
+			);
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 		2ECF7AEE204F66DD00708C96 /* Common */ = {
@@ -255,7 +307,7 @@
 		2EE53276204E977D00E5B240 /* YNAVFoundtion */ = {
 			isa = PBXGroup;
 			children = (
-				2E5007E4205B53E400E64489 /* Face */,
+				2E5007E4205B53E400E64489 /* Camera */,
 				2EC3199F2056574300D300BD /* Capture */,
 				2ECF7AF4204FD7A100708C96 /* MetaData */,
 				2ECF7AEE204F66DD00708C96 /* Common */,
@@ -338,6 +390,7 @@
 				TargetAttributes = {
 					2EE53273204E977D00E5B240 = {
 						CreatedOnToolsVersion = 9.2;
+						LastSwiftMigration = 0920;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -392,9 +445,11 @@
 				2E9592C6204FFB1100A0D181 /* MetaDataDetailViewController.swift in Sources */,
 				2E1ACEEA20513C7C00E6763F /* MetadataConverterFactory.swift in Sources */,
 				2EE5328A204E97D900E5B240 /* TableViewController.swift in Sources */,
+				2E6007E02061EF8E0065D8FC /* CodeViewController.swift in Sources */,
 				2E5007E6205B53F900E64489 /* FaceCameraViewController.swift in Sources */,
 				2EC319A5205657A300D300BD /* CameraViewController.swift in Sources */,
 				2E1ACEE820513B5D00E6763F /* DiscMetadataConverter.swift in Sources */,
+				2E6007E22061F0800065D8FC /* BaseCameraViewController.swift in Sources */,
 				2E26BAAE205260BC0071F350 /* UIView+AddLine.swift in Sources */,
 				2E9592C4204FF5D900A0D181 /* MetaDataViewController.swift in Sources */,
 				2E26BAAC20522F990071F350 /* VideoViewController.swift in Sources */,
@@ -405,6 +460,8 @@
 				2EBE6F1B205125F800DB277E /* CommentMetadataConverter.swift in Sources */,
 				2EE53298204EA45900E5B240 /* RecordViewController.swift in Sources */,
 				2E9592D62050BAA800A0D181 /* MetaData.swift in Sources */,
+				2ECB1C31206389E700AF5759 /* FilterCameraViewController.swift in Sources */,
+				2ECB1C382063947000AF5759 /* FilterPreviewView.swift in Sources */,
 				2E9592DF2050BD4C00A0D181 /* ConverterProtocol.swift in Sources */,
 				2EE88EA62057BCAA00F4B846 /* YNConstant.swift in Sources */,
 				2EC319A12056575B00D300BD /* CaptureViewController.swift in Sources */,
@@ -554,6 +611,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 95X9N24D2E;
 				INFOPLIST_FILE = YNAVFoundtion/Info.plist;
@@ -561,6 +619,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.geekzyn.YNAVFoundtion;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -570,6 +630,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 95X9N24D2E;
 				INFOPLIST_FILE = YNAVFoundtion/Info.plist;
@@ -577,6 +638,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.geekzyn.YNAVFoundtion;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};

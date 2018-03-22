@@ -10,7 +10,7 @@ import UIKit
 import CoreImage
 import AVFoundation
 
-class FaceCameraViewController: CameraViewController,AVCaptureMetadataOutputObjectsDelegate {
+class FaceCameraViewController: BaseCameraViewController,AVCaptureMetadataOutputObjectsDelegate {
     
     var metadataOutput: AVCaptureMetadataOutput = AVCaptureMetadataOutput()
     
@@ -26,7 +26,7 @@ class FaceCameraViewController: CameraViewController,AVCaptureMetadataOutputObje
     func addMetadataOutput() {
         
         if self.captureSession!.canAddOutput(self.metadataOutput) {
-            self.captureSession?.addOutput(self.metadataOutput)
+            self.captureSession!.addOutput(self.metadataOutput)
             self.metadataOutput.metadataObjectTypes = [AVMetadataObject.ObjectType.face]
             self.metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
             

@@ -15,6 +15,8 @@ class PreviewView: UIView {
     private var exposeView: UIView = UIView()
     private var previewLayer: AVCaptureVideoPreviewLayer = AVCaptureVideoPreviewLayer()
     
+    var codeLayers:[String:Any] = [String:Any]()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.setupUI()
@@ -111,6 +113,91 @@ class PreviewView: UIView {
                 view.transform = CGAffineTransform.identity
             })
         }
+    }
+    
+    
+    //处理机器码
+    func didDetectCodes(_ codes: [AVMetadataObject]) {
+        
+        let transformedCodes: NSMutableArray = NSMutableArray()
+        
+        for code in codes {
+            let transformedCode = self.previewLayer.transformedMetadataObject(for: code )
+            transformedCodes.add(transformedCode)
+        }
+        
+        var lostCodes = Array(self.codeLayers.keys)
+        
+        for code in transformedCodes as! [AVMetadataMachineReadableCodeObject] {
+            let stringValue = code.stringValue
+            YNLog(stringValue)
+            guard stringValue != nil else { continue }
+            
+            if lostCodes.contains(stringValue!) {
+                lostCodes.remove(at: lostCodes.index(of: stringValue!)!)
+            }
+            
+            var layers: Array<CAShapeLayer>
+            if self.codeLayers[stringValue!] == nil {
+                layers = [self.makeBoundsLayer(), self.makeCornersLayer()]
+                self.previewLayer.addSublayer(layers[0])
+                self.previewLayer.addSublayer(layers[1])
+            } else {
+                layers = self.codeLayers[stringValue!] as! Array<CAShapeLayer>
+            }
+            
+            self.codeLayers = [stringValue!:layers]
+            
+            let boundsLayer = layers[0]
+            boundsLayer.path = self.bezierPathForBounds(code.bounds).cgPath
+            boundsLayer.isHidden = false
+            
+            let cornersLayer = layers[1]
+            cornersLayer.path = self.bezierPathForCorners(code.corners).cgPath
+            cornersLayer.isHidden = false
+        }
+        
+    }
+    
+    
+    func bezierPathForBounds(_ bounds: CGRect) -> UIBezierPath {
+        return UIBezierPath(rect: bounds)
+    }
+    
+    
+    func bezierPathForCorners(_ corners: [CGPoint]) ->UIBezierPath {
+        
+        let path = UIBezierPath()
+        
+        for i in 0..<corners.count {
+            
+            let point = corners[i]
+            
+            if i == 0 {
+                path.move(to: point)
+            } else {
+                path.addLine(to: point)
+            }
+            
+        }
+        path.close()
+        return path
+    }
+    
+    func makeBoundsLayer() -> CAShapeLayer {
+        let shapeLayer = CAShapeLayer()
+        shapeLayer.strokeColor = UIColor(red: 0.95, green: 0.75, blue: 0.06, alpha: 1.0).cgColor
+        shapeLayer.lineWidth = 4.0
+        shapeLayer.fillColor = nil
+        return shapeLayer;
+    }
+    
+    func makeCornersLayer() -> CAShapeLayer {
+        let cornersLayer = CAShapeLayer()
+        cornersLayer.lineWidth = 2.0
+        cornersLayer.strokeColor = UIColor(red: 0.172, green: 0.671, blue: 0.428, alpha: 1.0).cgColor
+        cornersLayer.fillColor = UIColor(red: 0.190, green: 0.753, blue: 0.489, alpha: 0.5).cgColor
+        return cornersLayer
     }
     
     

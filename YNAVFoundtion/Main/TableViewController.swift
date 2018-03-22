@@ -10,7 +10,7 @@ import UIKit
 
 class TableViewController: UITableViewController {
     
-    let dataSources:NSArray = ["文本转语音","语音文件播放","录音","元数据","视频","AVKit","媒体捕捉","人脸检测"]
+    let dataSources:NSArray = ["文本转语音","语音文件播放","录音","元数据","视频","AVKit","媒体捕捉","人脸检测","条码扫描","视频处理"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,7 +68,13 @@ class TableViewController: UITableViewController {
             self.navigationController?.pushViewController(vc, animated: true)
         case 7:
             let vc = FaceCameraViewController()
-            self.present(vc, animated: true, completion: nil)
+            self.navigationController?.pushViewController(vc, animated: true)
+        case 8:
+            let vc = CodeViewController()
+            self.navigationController?.pushViewController(vc, animated: true)
+        case 9:
+            let vc = FilterCameraViewController()
+            self.navigationController?.pushViewController(vc, animated: true)
         default:
             self.navigationController?.pushViewController(SpeechViewController(), animated: true)
         }
